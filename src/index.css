@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-bgsoft text-gray-800;
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+/* Print ke waqt sirf paper preview dikhega, baaki sab chupa denge */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* Sab form inputs/selects/textareas ke liye ek common style */
+.input {
+  @apply w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm outline-none transition-all
+         focus:border-primary focus:ring-2 focus:ring-primary/20;
+}
