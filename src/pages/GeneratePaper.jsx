@@ -9,7 +9,7 @@ import { exportPaperToPdf } from "../utils/exportPdf";
 
 export default function GeneratePaper() {
   // react-hook-form form ki saari values track karta hai
-  const { register, handleSubmit } = useForm({
+  const { register, handleSubmit , reset} = useForm({
     defaultValues: {
       schoolName: "",
       examName: "",
@@ -19,7 +19,7 @@ export default function GeneratePaper() {
       examDate: "",
       timeAllowed: "",
       totalMarks: 50,
-      paperType: "mcqs",
+      paperType: "Mcqs",
       difficulty: "medium",
       instructions: "",
     },
@@ -136,6 +136,18 @@ export default function GeneratePaper() {
               "✨ Generate Paper"
             )}
           </Button>
+
+
+          <Button
+  type="button"
+  variant="secondary"
+  onClick={() => {
+    reset();
+    setPaperData(null);
+  }}
+>
+   Reset Form
+</Button>
         </form>
       </Card>
 
