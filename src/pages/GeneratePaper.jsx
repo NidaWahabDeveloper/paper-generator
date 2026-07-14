@@ -99,7 +99,7 @@ export default function GeneratePaper() {
           <div className="grid grid-cols-2 gap-3">
             <Field label="Paper Type">
               <select {...register("paperType")} className="input">
-                <option value="mcqs">MCQs</option>
+                <option value="Mcqs">MCQs</option>
                 <option value="short">Short Questions</option>
                 <option value="long">Long Questions</option>
                 <option value="mixed">Mixed</option>
