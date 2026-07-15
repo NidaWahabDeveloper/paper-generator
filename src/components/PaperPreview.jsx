@@ -44,7 +44,7 @@ export default function PaperPreview({ data }) {
       </div>
 
       <div className="mt-6 border-t border-dashed border-gray-300 pt-2 text-xs text-gray-400 text-center">
-      Paper generator
+          Paper Generator
       </div>
     </div>
   );

@@ -1,10 +1,5 @@
 import { mcqBank, shortBank, longBank } from "../data/questionBank";
 
-// "{subject}" ki jagah asli subject ka naam daal do
-function fillTemplate(text, subject) {
-  return text.replace("{subject}", subject || "the subject");
-}
-
 // Agar user ne field khali chhodi ho to default value de do
 function orDefault(value, fallback) {
   return value && String(value).trim() ? value : fallback;
@@ -16,6 +11,7 @@ function orDefault(value, fallback) {
 // { meta: {...}, questions: [ {number, type, text, marks, options}, ... ] }
 // ============================================================
 export function generatePaperData(values) {
+  // Step 1: Meta info (paper ki basic details) tayyar karo
   const meta = {
     schoolName: orDefault(values.schoolName, "ABC Public School"),
     examName: orDefault(values.examName, "Mid Term Examination"),
@@ -30,28 +26,31 @@ export function generatePaperData(values) {
     instructions: orDefault(values.instructions, "Attempt all questions. Write neatly."),
   };
 
-  // Paper type ke hisab se kitne sawal banane hain
+  // Step 2: Paper type ke hisab se kitne sawal banane hain
   let numberOfQuestions = 5;
   if (meta.paperType === "mixed") numberOfQuestions = 6;
   if (meta.paperType === "long") numberOfQuestions = 4;
 
+  // Step 3: Har question ke marks nikalo
   const marksPerQuestion = Math.round(meta.totalMarks / numberOfQuestions);
 
+  // Step 4: Har question banao
   const questions = [];
 
   for (let i = 0; i < numberOfQuestions; i++) {
-    // decide karo is number ke liye konsa type banega
+    // Type decide karo (mixed ho to rotate karo: mcqs -> short -> long)
     let type = meta.paperType;
     if (meta.paperType === "mixed") {
       const types = ["mcqs", "short", "long"];
       type = types[i % types.length];
     }
 
-    let text = "";
+    let baseText = "";
     let options = null;
 
+    // Bank se sawal utha lo
     if (type === "mcqs") {
-      text = fillTemplate(mcqBank[i % mcqBank.length], meta.subject);
+      baseText = mcqBank[i % mcqBank.length];
       options = [
         "Option A related to the topic",
         "Option B related to the topic",
@@ -59,10 +58,13 @@ export function generatePaperData(values) {
         "Option D related to the topic",
       ];
     } else if (type === "short") {
-      text = fillTemplate(shortBank[i % shortBank.length], meta.subject);
+      baseText = shortBank[i % shortBank.length];
     } else {
-      text = fillTemplate(longBank[i % longBank.length], meta.subject);
+      baseText = longBank[i % longBank.length];
     }
+
+    // Subject ab question text ke sath nahi jorha jayega — sirf baseText use hoga
+    const text = baseText;
 
     questions.push({
       number: i + 1,
