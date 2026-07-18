@@ -19,7 +19,7 @@ export default function GeneratePaper() {
       examDate: "",
       timeAllowed: "",
       totalMarks: 50,
-      paperType: "Mcqs",
+      paperType: "mcqs",
       difficulty: "medium",
       instructions: "",
     },
