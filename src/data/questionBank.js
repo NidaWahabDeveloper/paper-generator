@@ -1,29 +1,32 @@
 // ============================================================
 // DUMMY QUESTION BANK
-// Abhi humne asli AI (Gemini/OpenAI) connect nahi kiya, isliye
 // hum sample/dummy sawalat pehle se yahan likh dete hain.
 // Phase 2 mein yehi jagah AI ke response se replace hogi.
 // ============================================================
 
 export const mcqBank = [
-  "What is the basic definition of {subject}?",
-  "Which of the following best describes a key concept of {subject}?",
-  "Identify the correct term related to {subject} discussed in class.",
-  "Which option is NOT true about {subject}?",
-  "Choose the best example related to {subject}.",
+ 
+  "What is a computer?",
+  "Which of the following is an input device?",
+  "Which of the following is an output device?",
+  "What does CPU stand for?",
+  "What is the full form of RAM?",
 ];
+
 
 export const shortBank = [
-  "Define {subject} in your own words.",
-  "List three important points about {subject}.",
-  "Briefly explain why {subject} is important.",
-  "Give one real-life example related to {subject}.",
-  "State the difference between two key terms in {subject}.",
+  
+  "Define computer in your own words.",
+  "List three important parts of a computer system.",
+  "Briefly explain why computers are important in daily life.",
+  "State the difference between hardware and software.",
+  "What is the difference between input and output devices?",
 ];
 
+
 export const longBank = [
-  "Explain in detail the main concepts covered in {subject}, with examples.",
-  "Discuss the importance of {subject} and its applications.",
-  "Describe, with a diagram if needed, how a key process in {subject} works.",
-  "Compare and contrast two major topics within {subject}.",
+  "Explain in detail the main components of a computer, with examples.",
+  "Discuss the importance of computers and their applications in daily life.",
+  "Describe, with a diagram if needed, how the CPU processes data.",
+  "Compare and contrast hardware and software.",
 ];
