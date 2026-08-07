@@ -28,7 +28,6 @@ export default function GeneratePaper() {
   const [loading, setLoading] = useState(false);
   const [paperData, setPaperData] = useState(null);
   const [toast, setToast] = useState(null);
-  const [imageBase64, setImageBase64] = useState(null);
 
   // Toast dikhao aur 2.5 second baad khud gayab kardo
   const showToast = (msg) => {
@@ -36,115 +35,19 @@ export default function GeneratePaper() {
     setTimeout(() => setToast(null), 2500);
   };
 
-  const handleImageUpload = (e) => {
-  const image = e.target.files[0];
-
-  if (!image) return;
-
-  const reader = new FileReader();
-
-  reader.onload = () => {
-    setImageBase64(reader.result);
-  };
-
-  reader.readAsDataURL(image);
-};
-
-const generateWithAI = async (values) => {
-  const prompt = `You are an expert exam paper setter. Based on the attached image (if any) and these details:
-School: ${values.schoolName}, Subject: ${values.subject}, Class: ${values.className},
-Paper Type: ${values.paperType}, Difficulty: ${values.difficulty}, Total Marks: ${values.totalMarks}.
-
-Generate exam questions in this EXACT JSON format only, no extra text, no markdown:
-{"questions":[{"number":1,"type":"mcqs","text":"question here","marks":10,"options":["A","B","C","D"]}]}
-
-If paperType is "short" or "long", omit the "options" field. Generate a reasonable number of questions so marks add up close to the total.`;
-
-// 2. Image ka "data:image/png;base64,XXXX" wala prefix hatate hain
-  //    (Gemini ko sirf XXXX wala hissa chahiye, prefix nahi)
-  const base64Data = imageBase64 ? imageBase64.split(",")[1] : null;
-// 3. Request ka "body" (jo bhejna hai) taiyar karte hain
-  const parts = [{ text: prompt }];
-  if (base64Data) {
-    parts.push({ inline_data: { mime_type: "image/png", data: base64Data } });
-  }
-
-  // 4. Asal API call — yahan "await" use ho raha hai kyunke internet
-  //    par jana hai, turant jawab nahi milta
-  const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${import.meta.env.VITE_GEMINI_API_KEY}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ contents: [{ parts }] }),
-    }
-  );
-
-  const result = await response.json();
-
-  // 5. AI ka jawab text ke roop mein nikaalte hain
-  let aiText = result.candidates[0].content.parts[0].text;
-
-  // 6. Kabhi kabhi AI jawab ke sath ```json waghera bhi bhej deta hai,
-  //    usay saaf karte hain
-  aiText = aiText.replace(/```json|```/g, "").trim();
-
-  // 7. Text ko asal JavaScript object mein convert karte hain
-  const aiData = JSON.parse(aiText);
-
-  // 8. Meta (school name, exam name waghera) khud values se bana lete hain
-  const meta = {
-    schoolName: values.schoolName || "ABC Public School",
-    examName: values.examName || "Mid Term Examination",
-    className: values.className || "8th",
-    subject: values.subject || "General Subject",
-    teacherName: values.teacherName || "Class Teacher",
-    examDate: values.examDate || "__________",
-    timeAllowed: values.timeAllowed || "1 Hour",
-    totalMarks: Number(values.totalMarks) || 50,
-    paperType: values.paperType,
-    difficulty: values.difficulty,
-    instructions: values.instructions || "Attempt all questions.",
-  };
-
-  // 9. Meta + AI ke questions ko jodkar wapis bhejte hain
-  return { meta, questions: aiData.questions };
-};
-
   // Jab form submit ho (Generate Paper button dabaye)
-  // const onSubmit = (values) => {
-  //   setLoading(true);
-  //   setPaperData(null);
+  const onSubmit = (values) => {
+    setLoading(true);
+    setPaperData(null);
 
-  //   // 1.2 second ka fake delay — taake lage AI paper bana raha hai
-  //   setTimeout(() => {
-  //     const data = generatePaperData(values);
-  //     setPaperData(data);
-  //     setLoading(false);
-  //     showToast("✅ Paper generated successfully!");
-  //   }, 1200);
-  // };
-
-  const onSubmit = async (values) => {
-  setLoading(true);
-  setPaperData(null);
-
-  try {
-    // Pehle AI se try karo
-    const data = await generateWithAI(values);
-    setPaperData(data);
-    showToast("✅ AI se paper generate ho gaya!");
-  } catch (error) {
-    // Agar AI fail ho jaye (network issue, ya kuch bhi), dummy paper dikhado
-    console.error("AI failed, using dummy data:", error);
-    const data = generatePaperData(values);
-    setPaperData(data);
-    showToast("✅ Paper generated!");
-  } finally {
-    setLoading(false);
-  }
-};
-
+    // 1.2 second ka fake delay — taake lage AI paper bana raha hai
+    setTimeout(() => {
+      const data = generatePaperData(values);
+      setPaperData(data);
+      setLoading(false);
+      showToast("✅ Paper generated successfully!");
+    }, 1200);
+  };
 
   const handleDownload = () => {
     exportPaperToPdf(paperData);
@@ -212,7 +115,7 @@ If paperType is "short" or "long", omit the "options" field. Generate a reasonab
           </div>
 
           <Field label="Upload Paper Image / PDF (optional — for show)">
-            <input type="file" className="input" accept="image/*" onChange={handleImageUpload}/>
+            <input type="file" className="input" />
           </Field>
 
           <Field label="Additional Instructions">
@@ -277,7 +180,6 @@ If paperType is "short" or "long", omit the "options" field. Generate a reasonab
       <Toast message={toast} />
     </div>
   );
-
 }
 
 // Chota helper component — label + input ko group karta hai
